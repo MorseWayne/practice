@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技术论坛 - 首页</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-code"></i> TechForum
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="active"><i class="fas fa-home"></i> 首页</a>
+                <a href="#questions"><i class="fas fa-question-circle"></i> 问题</a>
+                <a href="#tags"><i class="fas fa-tags"></i> 标签</a>
+                <a href="#users"><i class="fas fa-users"></i> 用户</a>
+            </nav>
+            <div class="user-actions">
+                <button class="btn ask-btn" onclick="window.location.href='ask.html'"><i class="fas fa-plus"></i> 提问</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="content-wrap">
+            <div class="main-content">
+                <div class="search-bar">
+                    <input type="text" placeholder="搜索问题..." class="search-input">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="filter-options">
+                        <a href="#" class="active">最新</a>
+                        <a href="#">热门</a>
+                        <a href="#">未回答</a>
+                    </div>
+                    <div class="sort-options">
+                        <select class="sort-select">
+                            <option>按相关度排序</option>
+                            <option>按时间排序</option>
+                            <option>按投票排序</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="questions-list" id="questionsList">
+                    <!-- 问题列表将通过JavaScript动态生成 -->
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-card">
+                    <h3>关于 TechForum</h3>
+                    <p>TechForum 是一个技术问答社区，帮助开发者解决编程问题，分享知识和经验。</p>
+                    <button class="btn join-btn" onclick="window.location.href='ask.html'">加入社区</button>
+                </div>
+
+                <div class="sidebar-card">
+                    <h3>热门标签</h3>
+                    <div class="tags-cloud">
+                        <a href="#" class="tag">JavaScript</a>
+                        <a href="#" class="tag">Python</a>
+                        <a href="#" class="tag">Java</a>
+                        <a href="#" class="tag">HTML/CSS</a>
+                        <a href="#" class="tag">React</a>
+                        <a href="#" class="tag">Node.js</a>
+                        <a href="#" class="tag">C++</a>
+                        <a href="#" class="tag">Git</a>
+                        <a href="#" class="tag">数据库</a>
+                        <a href="#" class="tag">算法</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">关于我们</a>
+                <a href="#">使用条款</a>
+                <a href="#">隐私政策</a>
+                <a href="#">帮助中心</a>
+            </div>
+            <div class="copyright">© 2023 TechForum. 保留所有权利。</div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

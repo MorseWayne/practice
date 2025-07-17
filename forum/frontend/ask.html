@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技术论坛 - 提问</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-code"></i> TechForum
+            </div>
+            <nav class="main-nav">
+                <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+                <a href="#questions" class="active"><i class="fas fa-question-circle"></i> 问题</a>
+                <a href="#tags"><i class="fas fa-tags"></i> 标签</a>
+                <a href="#users"><i class="fas fa-users"></i> 用户</a>
+            </nav>
+            <div class="user-actions">
+                <button class="btn ask-btn" onclick="window.location.href='ask.html'"><i class="fas fa-plus"></i> 提问</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 提问表单内容保持不变 -->
+    <main class="container">
+        <div class="content-wrap">
+            <div class="main-content">
+                <div class="question-form-card">
+                    <h1 class="form-title">提出公开问题</h1>
+                    
+                    <!-- 表单内容与之前相同 -->
+                    <div class="form-guidelines">
+                        <h3>如何提出一个好问题</h3>
+                        <p>您准备提出一个与编程相关的问题，此表单将引导您完成整个过程。</p>
+                        <p>想提出非编程问题？查看<a href="#">相关主题</a>以找到合适的站点。</p>
+
+                        <h4>步骤</h4>
+                        <ul>
+                            <li>用一句话总结您的问题作为标题</li>
+                            <li>详细描述您的问题</li>
+                            <li>描述您尝试过的方法和期望的结果</li>
+                            <li>添加"标签"以帮助社区成员发现您的问题</li>
+                            <li>检查您的问题并发布到网站</li>
+                        </ul>
+                    </div>
+
+                    <form id="question-form">
+                        <div class="form-group">
+                            <label for="title">标题</label>
+                            <p class="form-hint">要具体，并想象您正在向他人提问。</p>
+                            <input type="text" id="title" placeholder="例如：有没有R函数可以查找向量中元素的索引？"
+                                   class="form-control title-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="content">问题详情</label>
+                            <p class="form-hint">请详细描述您的问题，包括您尝试过的方法和期望的结果。</p>
+                            <textarea id="content" rows="15" class="form-control content-input"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tags">标签</label>
+                            <p class="form-hint">添加最多5个标签，以描述您的问题涉及的技术领域。</p>
+                            <input type="text" id="tags" placeholder="例如：r vector indexing"
+                                   class="form-control tags-input">
+                            <div class="tags-suggestion">
+                                <span class="suggested-tag">r</span>
+                                <span class="suggested-tag">vector</span>
+                                <span class="suggested-tag">indexing</span>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn cancel-btn" onclick="window.location.href='index.html'">取消</button>
+                            <button type="submit" class="btn post-btn">发布问题</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-card">
+                    <h3>提问前请先</h3>
+                    <ul>
+                        <li>搜索是否已有类似问题</li>
+                        <li>阅读<a href="#">如何提出一个好问题</a></li>
+                        <li>确保您的问题与编程相关</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">关于我们</a>
+                <a href="#">使用条款</a>
+                <a href="#">隐私政策</a>
+                <a href="#">帮助中心</a>
+            </div>
+            <div class="copyright">© 2023 TechForum. 保留所有权利。</div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
