@@ -7,4 +7,5 @@ edition = "2024"
 actix-web = "4"
 actix-files = "0.6"
 log = "0.4"
-log4rs = "1.2"  # 添加log4rs依赖
+log4rs = "1.2"
+serde = { version = "1.0", features = ["derive"] }

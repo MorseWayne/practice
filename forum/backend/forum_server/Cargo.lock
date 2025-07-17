@@ -573,6 +573,7 @@ dependencies = [
  "actix-web",
  "log",
  "log4rs",
+ "serde",
 ]
 
 [[package]]
