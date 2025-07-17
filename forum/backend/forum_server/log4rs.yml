@@ -1,0 +1,16 @@
+appenders:
+  # 控制台输出
+  stdout:
+    kind: console
+    encoder:
+      pattern: "{d(%Y-%m-%d %H:%M:%S)} [{l}] {m}{n}"
+  # 文件输出
+  file:
+    kind: file
+    path: "/tmp/log/forum_server.log"
+    encoder:
+      pattern: "{d(%Y-%m-%d %H:%M:%S)} [{l}] {m}{n}"
+
+root:
+  level: info
+  appenders: [stdout, file]  # 同时输出到控制台和文件
