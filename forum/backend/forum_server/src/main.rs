@@ -1,4 +1,3 @@
-use actix_files::Files;
 use actix_web::{App, HttpServer, Responder, get, middleware::Logger, post, web};
 use log::info;
 use log4rs;
@@ -55,11 +54,6 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(app_state.clone())) // 注册共享状态
             .service(add_question) // 注册API服务
             .service(get_questions) // 注册API服务
-            .service(
-                Files::new("/", "/home/wayne/source/practice/forum/frontend")
-                    .index_file("index.html")
-                    .prefer_utf8(true),
-            )
     })
     .bind("0.0.0.0:8080")?
     .run()

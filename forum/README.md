@@ -11,10 +11,18 @@ server {
     listen 80;
     server_name _;  # 无域名时保留，有域名替换为具体域名（如 forum.example.com）
 
-    location / {
-        proxy_pass http://localhost:8080;  # 指向本地后端服务（Actix-web 默认端口）
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
+    # 静态文件直接指向本地前端目录
+    location / { 
+        root ${工程目录}/forum/frontend; 
+        index index.html; 
+        try_files $uri $uri/ /index.html; # 支持前端路由（如Vue/React的History模式）
+    }
+
+    # API请求代理到后端
+    location /api/ { 
+        proxy_pass http://localhost:8080/; # 注意末尾的斜杠，避免路径拼接问题
+        proxy_set_header Host $host; 
+        proxy_set_header X-Real-IP $remote_addr; 
     }
 }
 ```
@@ -22,11 +30,15 @@ server {
 ### 2. 启用配置
 - 创建软链接到 `sites-enabled` 目录：
   ```bash
-  sudo ln -s /etc/nginx/sites-available/forum /etc/nginx/sites-enabled/
+  sudo ln -s ${工程目录}/forum/backend/config/nginx/forum.conf /etc/nginx/sites-enabled/
   ```
 - 禁用默认配置（可选，避免冲突）：
   ```bash
   sudo rm /etc/nginx/sites-enabled/default  # 删除默认配置软链接
+  ```
+- 添加nginx用户到当前前端资源目录所属的用户租
+  ```bash
+  sudo usermod -aG wayne www-data # wayne: 当前资源目录所属用户组，www-data: nginx 用户
   ```
 
 ### 3. 验证配置
