@@ -1,4 +1,6 @@
 # Forum 项目部署文档
+本项目旨在实现一个论坛系统，前端主要使用js完成，后端使用rust语言完成
+<img width="2492" height="1167" alt="image" src="https://github.com/user-attachments/assets/cda2610d-5cbc-4491-bb40-453d3727ed2a" />
 
 ## Nginx 反向代理配置
 ### 1. 配置文件路径
