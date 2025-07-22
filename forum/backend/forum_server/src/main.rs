@@ -1,16 +1,16 @@
 use actix_web::{App, HttpResponse, HttpServer, Responder, get, middleware::Logger, post, web};
 use log::info;
 use log4rs;
-use redis::Client;
+use redis::{AsyncCommands, Client};
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
+use std::{fmt::format, sync::Arc};
 
 // 新增问题数据模型
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
-struct Question {
+struct Article {
     title: String,
     tags: Vec<String>,
-    details: String,
+    content: String,
     // 用户的id
     poster: u32,
     // 添加新字段并设置默认值
@@ -22,28 +22,59 @@ struct Question {
     answer_count: u32,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+struct VoteRequest {
+    article_id: u32,
+    user_id: u32,
+}
+
+const ARTICLE_KEY: &str = "article";
+const CREATE_TIME_KEY: &str = "create_time";
+const VOTE_KEY : &str = "vote";
 // 共享状态类型定义
 // 修改AppState为Redis连接管理器
 type AppState = Arc<Client>;
 
 // 新增创建问题API端点
-#[post("/api/questions")]
-async fn add_question(data: web::Data<AppState>, question: web::Json<Question>) -> impl Responder {
-    let conn = match data.get_multiplexed_async_connection().await {
+#[post("/api/articles")]
+async fn add_article(data: web::Data<AppState>, article: web::Json<Article>) -> impl Responder {
+    let mut conn = match data.get_multiplexed_async_connection().await {
         Ok(conn) => conn,
         Err(e) => return HttpResponse::InternalServerError().body(format!("{}", e)),
     };
-    
-    // let mut questions = data.lock().unwrap();
-    // questions.push(question.into_inner());
-    actix_web::HttpResponse::Ok().json("Question added successfully")
+
+    let article_id: u32 = conn.incr(ARTICLE_KEY, 1).await.unwrap();
+    let article_key = format!("article:{}", article_id);
+    let time: Vec<String> = redis::cmd("TIME").query_async(&mut conn).await.unwrap();
+    redis::cmd("ZADD")
+        .arg(CREATE_TIME_KEY)
+        .arg(&time[0])
+        .arg(&article_key)
+        .exec_async(&mut conn)
+        .await
+        .unwrap();
+
+    let article = article.into_inner();
+    let res: Result<(), redis::RedisError> = redis::cmd("HSET")
+        .arg(article_key)
+        .arg("title")
+        .arg(article.title)
+        .arg("content")
+        .arg(article.content)
+        .exec_async(&mut conn)
+        .await;
+
+    match res {
+        Ok(_) => actix_web::HttpResponse::Ok().json("Article added successfully"),
+        Err(e) => actix_web::HttpResponse::InternalServerError().body(format!("{}", e)),
+    }
 }
 
 // 新增查询所有问题API端点
-#[get("/api/questions")]
-async fn get_questions(data: web::Data<AppState>) -> impl Responder {
-    let questions = Question::default();
-    actix_web::HttpResponse::Ok().json(&questions)
+#[get("/api/articles")]
+async fn get_articles(_data: web::Data<AppState>) -> impl Responder {
+    let article = Article::default();
+    actix_web::HttpResponse::Ok().json(&article)
 }
 
 #[actix_web::main]
@@ -67,8 +98,8 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(Logger::default())
             .app_data(web::Data::new(app_state.clone()))
-            .service(add_question)
-            .service(get_questions)
+            .service(add_article)
+            .service(get_articles)
     })
     .bind("127.0.0.1:8080")?
     .run()

@@ -3,7 +3,6 @@
        key article:id
        field title
        field content
-       field user_id
     }
 
     ZSET1 {
