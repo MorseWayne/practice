@@ -1,4 +1,6 @@
-use actix_web::{App, HttpResponse, HttpServer, Responder, get, middleware::Logger, post, web};
+use actix_web::{
+    App, HttpResponse, HttpServer, Responder, get, middleware::Logger, post, put, web,
+};
 use log::info;
 use log4rs;
 use redis::{AsyncCommands, Client};
@@ -30,7 +32,7 @@ struct VoteRequest {
 
 const ARTICLE_KEY: &str = "article";
 const CREATE_TIME_KEY: &str = "create_time";
-const VOTE_KEY : &str = "vote";
+const VOTE_KEY: &str = "vote";
 // 共享状态类型定义
 // 修改AppState为Redis连接管理器
 type AppState = Arc<Client>;
@@ -77,6 +79,30 @@ async fn get_articles(_data: web::Data<AppState>) -> impl Responder {
     actix_web::HttpResponse::Ok().json(&article)
 }
 
+#[put("/api/articles/{article_id}/vote")]
+async fn vote_article(
+    data: web::Data<AppState>,
+    path: web::Path<u32>,
+    vote_req: web::Json<VoteRequest>,
+) -> impl Responder {
+    let article_id = path.into_inner();
+    let vote_req = vote_req.into_inner();
+    let mut conn = match data.get_multiplexed_async_connection().await {
+        Ok(conn) => conn,
+        Err(e) => return HttpResponse::InternalServerError().body(format!("{}", e)),
+    };
+    let vote_key = format!("{}:{}", VOTE_KEY, article_id);
+    let res: Result<(), redis::RedisError> = redis::cmd("SADD")
+        .arg(vote_key)
+        .arg(vote_req.user_id)
+        .exec_async(&mut conn)
+        .await;
+    match res {
+        Ok(_) => actix_web::HttpResponse::Ok().json("Vote added successfully"),
+        Err(e) => actix_web::HttpResponse::InternalServerError().body(format!("{}", e)),
+    }
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     log4rs::init_file("log4rs.yml", Default::default()).expect("Failed to initialize log4rs");
@@ -100,6 +126,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(app_state.clone()))
             .service(add_article)
             .service(get_articles)
+            .service(vote_article)
     })
     .bind("127.0.0.1:8080")?
     .run()
