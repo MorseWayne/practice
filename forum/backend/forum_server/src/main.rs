@@ -5,7 +5,7 @@ use log::info;
 use log4rs;
 use redis::{AsyncCommands, Client};
 use serde::{Deserialize, Serialize};
-use std::{fmt::format, sync::Arc};
+use std::sync::Arc;
 
 // 新增问题数据模型
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
@@ -26,13 +26,19 @@ struct Article {
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 struct VoteRequest {
-    article_id: u32,
     user_id: u32,
 }
 
 const ARTICLE_KEY: &str = "article";
 const CREATE_TIME_KEY: &str = "create_time";
 const VOTE_KEY: &str = "vote";
+const SCORE_KEY: &str = "score";
+
+/// 对于每篇文章，每200个赞可以展示在热榜上一天，
+///
+/// VOTE_SCORE也是每篇文章每增加一个赞可以在热榜上存活的时间
+const VOTE_SCORE: i32 = 24 * 60 * 60 / 200;
+
 // 共享状态类型定义
 // 修改AppState为Redis连接管理器
 type AppState = Arc<Client>;
@@ -92,13 +98,24 @@ async fn vote_article(
         Err(e) => return HttpResponse::InternalServerError().body(format!("{}", e)),
     };
     let vote_key = format!("{}:{}", VOTE_KEY, article_id);
-    let res: Result<(), redis::RedisError> = redis::cmd("SADD")
+    let res: Result<u64, redis::RedisError> = redis::cmd("SADD")
         .arg(vote_key)
         .arg(vote_req.user_id)
-        .exec_async(&mut conn)
+        .query_async(&mut conn)
         .await;
+
     match res {
-        Ok(_) => actix_web::HttpResponse::Ok().json("Vote added successfully"),
+        Ok(0) => actix_web::HttpResponse::Ok().json("already voted."),
+        Ok(_) => {
+            redis::cmd("ZINCRBY")
+                .arg(SCORE_KEY)
+                .arg(VOTE_SCORE)
+                .arg(article_id)
+                .exec_async(&mut conn)
+                .await
+                .unwrap();
+            actix_web::HttpResponse::Ok().json("operation successful.")
+        }
         Err(e) => actix_web::HttpResponse::InternalServerError().body(format!("{}", e)),
     }
 }
