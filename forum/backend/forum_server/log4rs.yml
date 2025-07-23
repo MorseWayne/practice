@@ -12,5 +12,5 @@ appenders:
       pattern: "{d(%Y-%m-%d %H:%M:%S)} [{l}] {m}{n}"
 
 root:
-  level: info
+  level: debug
   appenders: [stdout, file]  # 同时输出到控制台和文件

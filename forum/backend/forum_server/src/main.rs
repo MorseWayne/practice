@@ -1,4 +1,4 @@
-use actix_web::{App, HttpServer, middleware::Logger};
+use actix_web::{App, HttpServer, middleware::Logger, web};
 use log::info;
 use log4rs;
 use std::sync::Arc;
@@ -9,7 +9,7 @@ mod handlers;
 mod models;
 mod routes;
 
-use db::redis::{AppState, create_redis_client};
+use db::redis::create_redis_client;
 use routes::config_routes;
 
 #[actix_web::main]
@@ -27,7 +27,6 @@ async fn main() -> std::io::Result<()> {
 
     // 创建共享状态
     let app_state = Arc::new(client);
-
     HttpServer::new(move || {
         App::new()
             .wrap(Logger::default())

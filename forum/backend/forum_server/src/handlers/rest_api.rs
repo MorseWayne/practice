@@ -1,6 +1,6 @@
-use actix_web::{web, HttpResponse, Responder};
-use redis::{AsyncCommands, RedisError};
 use crate::{constants::*, db::redis::AppState, models::article::Article};
+use actix_web::{HttpResponse, Responder, get, post, put, web};
+use redis::{AsyncCommands, RedisError};
 
 // 新增创建问题API端点
 #[post("/api/articles")]
