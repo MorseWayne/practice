@@ -1,6 +1,6 @@
 use crate::{constants::*, db::redis::AppState, models::article::Article};
 use actix_web::{HttpResponse, Responder, get, post, put, web};
-use redis::{AsyncCommands, RedisError};
+use redis::RedisError;
 
 // 新增创建问题API端点
 #[post("/api/articles")]
@@ -10,31 +10,30 @@ pub async fn add_article(data: web::Data<AppState>, article: web::Json<Article>)
         Err(e) => return HttpResponse::InternalServerError().body(format!("{}", e)),
     };
 
-    let article_id: u32 = conn.incr(ARTICLE_KEY, 1).await.unwrap();
-    let article_key = format!("article:{}", article_id);
-    let time: Vec<String> = redis::cmd("TIME").query_async(&mut conn).await.unwrap();
-    redis::cmd("ZADD")
-        .arg(CREATE_TIME_KEY)
-        .arg(&time[0])
-        .arg(&article_key)
-        .exec_async(&mut conn)
-        .await
-        .unwrap();
-
     let article = article.into_inner();
-    let res: Result<(), RedisError> = redis::cmd("HSET")
-        .arg(article_key)
-        .arg("title")
+    // 加载外部Lua脚本并进行语法检查
+    let script_content = include_str!("../scripts/add_article.lua");
+    let script = redis::Script::new(script_content);
+    // 执行脚本并处理详细错误
+    let article_id: u32 = match script
+        .key(ARTICLE_KEY)
+        .key(CREATE_TIME_KEY)
         .arg(article.title)
-        .arg("content")
         .arg(article.content)
-        .exec_async(&mut conn)
-        .await;
-
-    match res {
-        Ok(_) => HttpResponse::Ok().json("Article added successfully"),
-        Err(e) => HttpResponse::InternalServerError().body(format!("{}", e)),
-    }
+        .invoke_async(&mut conn)
+        .await
+    {
+        Ok(id) => id,
+        Err(e) => {
+            log::error!("Failed to execute Lua script: {:?}", e);
+            return HttpResponse::InternalServerError()
+                .body(format!("Failed to add article: {}", e));
+        }
+    };
+    HttpResponse::Ok().json(format!(
+        "Article added successfully with id: {}",
+        article_id
+    ))
 }
 
 // 新增查询所有问题API端点
