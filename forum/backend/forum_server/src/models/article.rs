@@ -5,7 +5,7 @@ pub struct Article {
     pub title: String,
     pub tags: Vec<String>,
     pub content: String,
-    pub poster: u32,
+    pub user_id: u32,
     #[serde(default)]
     pub view_count: u32,
     #[serde(default)]
