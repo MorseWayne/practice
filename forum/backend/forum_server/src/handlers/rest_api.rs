@@ -1,4 +1,4 @@
-use crate::{constants::*, db::redis::AppState, models::article::Article};
+use crate::{constants::*, db::redis::AppState, models::request::Article};
 use actix_web::{HttpResponse, Responder, get, post, put, web};
 use redis::RedisError;
 
@@ -56,7 +56,7 @@ pub async fn get_articles(_data: web::Data<AppState>) -> impl Responder {
 pub async fn vote_article(
     data: web::Data<AppState>,
     path: web::Path<u32>,
-    vote_req: web::Json<crate::models::article::VoteRequest>,
+    vote_req: web::Json<crate::models::request::Vote>,
 ) -> impl Responder {
     let article_id = path.into_inner();
     let vote_req = vote_req.into_inner();

@@ -15,6 +15,6 @@ pub struct Article {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
-pub struct VoteRequest {
+pub struct Vote {
     pub user_id: u32,
 }
