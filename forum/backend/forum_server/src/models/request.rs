@@ -18,3 +18,25 @@ pub struct Article {
 pub struct Vote {
     pub user_id: u32,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ArticleQuery {
+    #[serde(default = "default_sort")]
+    sort: String,
+    #[serde(default = "default_order")]
+    order: String,
+    #[serde(default = "default_limit")]
+    limit: u32,
+}
+
+fn default_sort() -> String {
+    "time".to_string()
+}
+
+fn default_order() -> String {
+    "desc".to_string()
+}
+
+fn default_limit() -> u32 {
+    10
+}
