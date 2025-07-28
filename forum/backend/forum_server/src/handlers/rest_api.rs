@@ -15,9 +15,12 @@ pub async fn add_article(data: web::Data<AppState>, article: web::Json<Article>)
     let script_content = include_str!("../scripts/add_article.lua");
     let script = redis::Script::new(script_content);
     // 执行脚本并处理详细错误
-    let tags_json = serde_json::to_string(&article.tags).map_err(|e| {
-        HttpResponse::InternalServerError().body(format!("serialize tags error: {}", e))
-    })?;
+    let tags_json = match serde_json::to_string(&article.tags) {
+        Ok(json) => json,
+        Err(e) => {
+            return HttpResponse::InternalServerError().body(format!("serialize tags error: {}", e));
+        }
+    };
 
     let article_id: u32 = match script
         .key(ARTICLE_KEY)
