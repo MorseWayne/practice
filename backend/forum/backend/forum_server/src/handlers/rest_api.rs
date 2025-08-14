@@ -1,4 +1,4 @@
-use crate::{constants::*, db::redis::AppState, models::request::Article};
+use crate::{constants::*, db::redis::AppState, models::request::{Article, ArticleQuery}};
 use actix_web::{HttpResponse, Responder, get, post, put, web};
 use redis::RedisError;
 
@@ -47,7 +47,7 @@ pub async fn add_article(data: web::Data<AppState>, article: web::Json<Article>)
 
 // 新增查询所有问题API端点
 #[get("/api/articles")]
-pub async fn get_articles(_data: web::Data<AppState>) -> impl Responder {
+pub async fn get_articles(_data: web::Data<AppState>, query: web::Query<ArticleQuery>) -> impl Responder {
     let article = Article::default();
     HttpResponse::Ok().json(&article)
 }
