@@ -6,6 +6,7 @@
 #include <atomic>
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <queue>
 
 template <typename T>
@@ -70,19 +71,21 @@ public:
         return true;
     }
 
-    T front() {
+    std::optional<T> front()
+    {
         auto head = head_.load();
         auto next = head->next.load();
         if (next == nullptr) {
-            throw std::runtime_error("queue is empty");
+            return std::nullopt;
         }
         return next->val;
     }
 
-    T end() {
+    std::optional<T> end()
+    {
         auto tail = tail_.load();
         if (tail == nullptr) {
-            throw std::runtime_error("queue is empty");
+            return std::nullopt;
         }
         return tail->val;
     };
