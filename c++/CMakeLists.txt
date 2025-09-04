@@ -20,10 +20,11 @@ target_sources(${OUTPUT_NAME} PRIVATE
     timer/timer_with_epoll.cpp
     timer/timer_with_epoll_test.cpp
     lock_free_queue/lock_free_queue_test.cpp
+    ipc/channel_test.cpp
 )
 
 target_link_libraries(${OUTPUT_NAME} PRIVATE Catch2::Catch2)
-target_include_directories(${OUTPUT_NAME} PRIVATE ./)
+target_include_directories(${OUTPUT_NAME} PRIVATE ./ ./util)
 
 add_test(NAME Catch2Tests COMMAND tests)
 

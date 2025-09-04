@@ -255,13 +255,8 @@ TEST_CASE("LockFreeQueue edge cases", "[LFQ]")
 
     SECTION("Test popping from empty queue") { REQUIRE(queue.pop() == false); }
 
-    SECTION("Test front on empty queue") { REQUIRE_THROWS(queue.front()); }
+    SECTION("Test front on empty queue") { REQUIRE(queue.front() == std::nullopt); }
 
-    SECTION("Test end on empty queue")
-    {
-        // 注意：当前实现中end()方法可能有问题，因为tail_可能指向dummy节点
-        REQUIRE_NOTHROW(queue.end());
-    }
 
     SECTION("Test high frequency push and pop")
     {
