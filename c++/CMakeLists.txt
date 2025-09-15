@@ -20,9 +20,10 @@ add_executable(${OUTPUT_NAME})
 target_sources(${OUTPUT_NAME} PRIVATE
     timer/timer_with_epoll.cpp
     timer/timer_with_epoll_test.cpp
-    lock_free_queue/lock_free_queue_test.cpp
-    ipc/channel_test.cpp
 
+    adt/lock_free_queue/lock_free_queue_test.cpp
+
+    ipc/channel_test.cpp
     stl/vector_test.cpp
 )
 
