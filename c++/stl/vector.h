@@ -86,6 +86,18 @@ public:
         return data_[index];
     }
 
+    // 下标访问运算符 - 非const版本
+    T& operator[](size_t index)
+    {
+        return data_[index];  // 不做边界检查，与STL行为一致
+    }
+
+    // 下标访问运算符 - const版本
+    const T& operator[](size_t index) const
+    {
+        return data_[index];  // 不做边界检查，与STL行为一致
+    }
+
     T& front()
     {
         if (empty()) {

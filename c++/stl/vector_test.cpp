@@ -177,6 +177,31 @@ TEST_CASE("基本操作", "[vector][operations]")
         vec.at(1) = 25;
         REQUIRE(vec.at(1) == 25);
     }
+    
+    SECTION("下标访问运算符[]") {
+        Vector<int> vec;
+        vec.push_back(100);
+        vec.push_back(200);
+        vec.push_back(300);
+        
+        // 测试读取
+        REQUIRE(vec[0] == 100);
+        REQUIRE(vec[1] == 200);
+        REQUIRE(vec[2] == 300);
+        
+        // 测试修改
+        vec[1] = 250;
+        REQUIRE(vec[1] == 250);
+        
+        // 测试const版本
+        const Vector<int>& const_vec = vec;
+        REQUIRE(const_vec[0] == 100);
+        REQUIRE(const_vec[1] == 250);
+        REQUIRE(const_vec[2] == 300);
+        
+        // 注意：operator[]不做边界检查，这是正常的STL行为
+        // 在debug模式下可能会捕获越界访问，但release模式下不会抛异常
+    }
 }
 
 TEST_CASE("内存管理", "[vector][memory]")
