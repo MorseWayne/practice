@@ -23,6 +23,8 @@ target_sources(${OUTPUT_NAME} PRIVATE
     practice/adt/lock_free_queue/lock_free_queue_test.cpp
     practice/ipc/channel_test.cpp
     practice/stl/vector_test.cpp
+
+    interview/order_system/order_system_test.cpp
 )
 
 target_link_libraries(${OUTPUT_NAME} PRIVATE Catch2::Catch2)
