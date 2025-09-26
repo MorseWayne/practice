@@ -3,31 +3,23 @@
 
 using namespace std;
 class A {
-    virtual void test() {
-        cout << "A: tset" << endl;        
-    }
+public:
+    ~A() { cout << "~A: called" << endl; }
+    virtual void test() { cout << "A: test" << endl; }
 };
 
-class B : virtual public A {
-    void test() override {
-        cout << "B: test" << endl;
-    }
+class B : public A {
+public:
+    virtual ~B() { cout << "~B: called" << endl; }
+    void test() override { cout << "B: test" << endl; }
 };
 
-class C : virtual public A {
-    virtual void test() {
-        cout << "C: test" << endl;
-    }
-};
-
-class D : virtual public B, virtual public C {
-    virtual void test() {
-        cout << "C: test" << endl;
-    }
-};
-
-
+#include <memory>
 TEST_CASE("Virtual table basic test", "[vtable]")
 {
-    D d;
+    // std::shared_ptr<B>  a = std::make_shared<B>();
+    // a->test();
+
+    A* a1 = new B();
+    delete a1;
 }

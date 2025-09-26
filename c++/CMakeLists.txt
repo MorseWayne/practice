@@ -25,6 +25,12 @@ target_sources(${OUTPUT_NAME} PRIVATE
     practice/stl/vector_test.cpp
 
     interview/order_system/order_system_test.cpp
+    adt/lock_free_queue/lock_free_queue_test.cpp
+
+    ipc/channel_test.cpp
+    stl/vector_test.cpp
+
+    oop/virtual_table_test.cpp
 )
 
 target_link_libraries(${OUTPUT_NAME} PRIVATE Catch2::Catch2)
