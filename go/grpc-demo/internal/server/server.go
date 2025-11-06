@@ -94,8 +94,22 @@ func UnrayLoggingInterceptor(
 	return
 }
 
+func StreamLoggingInterceptor(
+	srv interface{},
+	ss grpc.ServerStream,
+	info *grpc.StreamServerInfo,
+	handler grpc.StreamHandler) error {
+	start := time.Now()
+	err := handler(srv, ss)
+	log.Printf("[STREAM] method = %s, cost = %s, err = %v", info.FullMethod, time.Since(start), err)
+	return err
+}
+
 func NewGrpcServer() *grpc.Server {
-	s := grpc.NewServer(grpc.UnaryInterceptor(UnrayLoggingInterceptor))
+	s := grpc.NewServer(
+		grpc.UnaryInterceptor(UnrayLoggingInterceptor),
+		grpc.StreamInterceptor(StreamLoggingInterceptor),
+	)
 	v1.RegisterCalculatorServiceServer(s, &CalculatorSerer{})
 	return s
 }
