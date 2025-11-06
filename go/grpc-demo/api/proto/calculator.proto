@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package calculator.v1;
+option go_package="grpc-demo/api/gen/caculator/v1;v1";
+
+service CalculatorService {
+  rpc Add (AddRequest) returns (AddResponse);
+  rpc SumStream (stream AddRequest) returns (AddResponse);                // client streaming
+  rpc RangeAdd (RangeRequest) returns (stream AddResponse);               // server streaming
+  rpc ChatAdd (stream AddRequest) returns (stream AddResponse);           // bidirectional
+}
+
+message AddRequest {
+  int64 a = 1;
+  int64 b = 2;
+}
+
+message AddResponse {
+  int64 result = 1;
+}
+
+message RangeRequest {
+  int64 start = 1;
+  int64 end   = 2;
+}
