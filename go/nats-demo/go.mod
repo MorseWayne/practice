@@ -1,4 +1,4 @@
-module github.com/MorseWayne/nats_test
+module github.com/MorseWayne/nats-demo
 
 go 1.25.3
 
