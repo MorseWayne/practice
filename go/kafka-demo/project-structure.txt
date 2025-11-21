@@ -1,0 +1,36 @@
+.
+├── docker-compose.yml
+├── docs
+│   ├── 01-kafka-basics.md
+│   ├── 02-kafka-architecture.md
+│   ├── 03-message-partition.md
+│   └── 04-setup-environment.md
+├── examples
+│   ├── 01-simple-producer
+│   │   ├── main.go
+│   │   └── README.md
+│   ├── 02-simple-consumer
+│   │   ├── main.go
+│   │   └── README.md
+│   ├── 04-async-producer
+│   │   └── main.go
+│   ├── 05-batch-consumer
+│   │   └── main.go
+│   └── 08-order-processing
+│       ├── main.go
+│       ├── models
+│       └── README.md
+├── go.mod
+├── go.sum
+├── Makefile
+├── pkg
+│   ├── config
+│   │   └── config.go
+│   └── logger
+│       └── logger.go
+├── project-structure.md
+├── project-structure.txt
+├── QUICKSTART.md
+└── README.md
+
+11 directories, 22 files

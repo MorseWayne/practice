@@ -51,21 +51,27 @@ func Run(addr string) error {
 		log.Println("RangeAdd recv: ", m.Result)
 	}
 
-	// bidrectional
-	bs, _ := c1.ChatAdd(ctx)
-	bs.Send(&v1.AddRequest{A: 10, B: 5})
-	bs.Send(&v1.AddRequest{A: 10, B: 6})
-	bs.CloseSend()
-	for {
-		m, err := bs.Recv()
-		if err != io.EOF {
-			break
+	// bidirectional
+	ctx4, cancel4 := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel4()
+	bs, err := c1.ChatAdd(ctx4)
+	if err != nil {
+		log.Println("ChatAdd create error:", err)
+	} else {
+		bs.Send(&v1.AddRequest{A: 10, B: 5})
+		bs.Send(&v1.AddRequest{A: 10, B: 6})
+		bs.CloseSend()
+		for {
+			m, err := bs.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Println("ChatAdd error: ", err)
+				break
+			}
+			log.Println("ChatAdd recv: ", m.Result)
 		}
-		if err != nil {
-			log.Println("Chatadd error: ", err)
-			break
-		}
-		log.Println("chatadd recv: ", m.Result)
 	}
 
 	return nil
