@@ -435,7 +435,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Go Application Metrics",
+  "title": "my grafana demo",
   "uid": "go-app-metrics",
   "version": 0,
   "weekStart": ""
